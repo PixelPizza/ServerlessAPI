@@ -1,6 +1,6 @@
-All Rights Reserved License
+# All Rights Reserved License
 
-Copyright (c) 2023 Pixel Pizza
+Copyright © 2023 Pixel Pizza
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
