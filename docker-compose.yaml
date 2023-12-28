@@ -1,0 +1,10 @@
+version: '3.6'
+services:
+  app:
+    image: pixelpizza/serverlessapi
+    build:
+      dockerfile: Dockerfile.build
+    command: ["$PWD"]
+    volumes:
+      - .:/app
+      - /var/run/docker.sock:/var/run/docker.sock

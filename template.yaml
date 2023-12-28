@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: API for PixelPizza applications
+
+Resources:
+  APIFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      CodeUri: ./
+      Handler: app.main.api_handler
+      Runtime: python3.8
+      Events:
+        Root:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+        NonRoot:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+  APILogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['/', ['/aws/lambda', !Ref APIFunction]]
+      RetentionInDays: 30
+
+Outputs:
+  APIFunction:
+    Description: "Lambda function for the API"
+    Value: !GetAtt APIFunction.Arn
+  APIFunctionIamRole:
+    Description: "Implicit IAM Role created for API function"
+    Value: !GetAtt APIFunctionRole.Arn
+  APILogGroup:
+    Description: "Log group created for API function"
+    Value: !GetAtt APILogGroup.Arn
+  Api:
+    Description: "API Gateway endpoint URL for Prod stage for App function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
