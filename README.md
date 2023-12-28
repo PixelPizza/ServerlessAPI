@@ -12,4 +12,4 @@
 ## Description
 
 The PixelPizza API is an API used by PixelPizza applications like the Pixel Pizza bot.
-While the repository for this API is public, we do not support forks, nor do we support building and running this application yourself. Refer to our [license](./LICENSE) for more information.
+While the repository for this API is public, we do not support forks, nor do we support building and running this application yourself. Refer to our [license](./LICENSE.md) for more information.
