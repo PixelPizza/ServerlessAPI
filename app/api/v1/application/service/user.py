@@ -1,10 +1,10 @@
-from ...datasource.dao.user import UserDAO
+from ...datasource.dao.user import UserDAODep
 from ..domain.user import UserDomain
 from ..mapper.user import map_user_domain_to_user_entity, map_user_entity_to_user_domain
 
 
 class UserService:
-    def __init__(self, user_dao: UserDAO = UserDAO()):
+    def __init__(self, user_dao: UserDAODep):
         self.user_dao = user_dao
 
     def create_user(self, user: UserDomain) -> None:

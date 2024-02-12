@@ -1,9 +1,14 @@
-from ..ddb.user import UserDDBDAO
-from ..entity.user import UserEntity
+from typing import Annotated
+
+from fastapi import Depends
+
+from .base import UserDAO
+from ...ddb.user import UserDDBDAO
+from ...entity.user import UserEntity
 
 
-class UserDAO:
-    def __init__(self, user_ddb_dao: UserDDBDAO = UserDDBDAO()):
+class AWSUserDAO(UserDAO):
+    def __init__(self, user_ddb_dao: Annotated[UserDDBDAO, Depends()]):
         self.user_ddb_dao = user_ddb_dao
 
     def has_user(self, user_id: int) -> bool:

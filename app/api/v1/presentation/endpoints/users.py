@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
 from mangum import Mangum
 
 from ...app import PixelPizzaAPI
@@ -8,10 +10,14 @@ from ...application.service.user import UserService
 
 router = APIRouter(prefix="/users")
 
+type UserServiceDep = Annotated[UserService, Depends()]
+
 
 @router.post("/", status_code=201)
-async def create_user(registration: Registration) -> User:
-    user_service = UserService()
+async def create_user(
+    registration: Registration,
+    user_service: Annotated[UserService, Depends()]
+) -> User:
     user_domain = map_registration_to_user_domain(registration)
     user_service.create_user(user_domain)
     user_response = user_service.get_user(registration.user_id)
