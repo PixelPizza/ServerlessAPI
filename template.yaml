@@ -3,42 +3,65 @@ Transform: AWS::Serverless-2016-10-31
 Description: API for PixelPizza applications
 
 Resources:
-  APIFunction:
+  UsersFunction:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
       CodeUri: ./
-      Handler: app.main.api_handler
-      Runtime: python3.8
+      Handler: app.users_handler
+      Runtime: python3.12
+      Environment:
+        Variables:
+          USER_TABLE_NAME: !Ref UserTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
       Events:
-        Root:
-          Type: Api
-          Properties:
-            Path: /
-            Method: ANY
         NonRoot:
           Type: Api
           Properties:
             Path: /{proxy+}
             Method: ANY
 
-  APILogGroup:
+  UserTable:
+    Type: AWS::DynamoDB::GlobalTable
+    Properties:
+      TableName: PP3_User
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+      Replicas:
+        - TableClass: STANDARD
+          Region: eu-west-1
+        - TableClass: STANDARD
+          Region: eu-north-1
+      AttributeDefinitions:
+        - AttributeName: UserId
+          AttributeType: N
+      KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  UsersLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Join ['/', ['/aws/lambda', !Ref APIFunction]]
+      LogGroupName: !Join ['/', ['/aws/lambda', !Ref UsersFunction]]
       RetentionInDays: 30
 
 Outputs:
-  APIFunction:
-    Description: "Lambda function for the API"
-    Value: !GetAtt APIFunction.Arn
-  APIFunctionIamRole:
-    Description: "Implicit IAM Role created for API function"
-    Value: !GetAtt APIFunctionRole.Arn
-  APILogGroup:
-    Description: "Log group created for API function"
-    Value: !GetAtt APILogGroup.Arn
+  UsersFunction:
+    Description: "Lambda function for the users resource"
+    Value: !GetAtt UsersFunction.Arn
+  UserTable:
+    Description: "Global DynamoDB table for users"
+    Value: !GetAtt UserTable.Arn
+  UsersFunctionIamRole:
+    Description: "Implicit IAM Role created for Users function"
+    Value: !GetAtt UsersFunctionRole.Arn
+  UsersLogGroup:
+    Description: "Log group created for Users function"
+    Value: !GetAtt UsersLogGroup.Arn
   Api:
     Description: "API Gateway endpoint URL for Prod stage for App function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
