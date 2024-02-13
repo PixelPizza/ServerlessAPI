@@ -1,3 +1,5 @@
+from typing import Annotated
+from fastapi import Depends
 from ...datasource.dao.user import UserDAODep
 from ..domain.user import UserDomain
 from ..mapper.user import map_user_domain_to_user_entity, map_user_entity_to_user_domain
@@ -17,3 +19,6 @@ class UserService:
     def get_user(self, user_id: str) -> UserDomain:
         user_entity = self.user_dao.get_user(int(user_id))
         return map_user_entity_to_user_domain(user_entity)
+
+
+UserServiceDep = Annotated[UserService, Depends()]
