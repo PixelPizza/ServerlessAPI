@@ -1,4 +1,3 @@
-import time
 from ..domain.user import UserDomain
 from ...datasource.entity.user import UserEntity
 
